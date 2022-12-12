@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     #user apps
     'core',
+    'members'
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,7 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_URL = '/members/login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'home'
