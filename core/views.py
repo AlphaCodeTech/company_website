@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.generic.base import TemplateView
+from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import Client
 
 
 
@@ -17,3 +19,7 @@ def home(request):
 
 class DashboardView(LoginRequiredMixin,TemplateView):
     template_name='core/dashboard-index.html'
+
+class ClientListView(generic.ListView):
+    template_name='core/client-list.html'
+    model = Client
