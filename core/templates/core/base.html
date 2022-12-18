@@ -298,7 +298,42 @@
           <i class="bi bi-people"></i>
           <span>Clients</span>
         </a>
-      </li><!-- End Blank Page Nav -->
+      </li><!-- End Client Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#pos-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-shop"></i><span>Point of Sale</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="pos-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'account_overview'%}">
+              <i class="bi bi-circle"></i><span>Account Overview</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="{% url 'service' %}">
+              <i class="bi bi-circle"></i><span>Service</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'product' %}">
+              <i class="bi bi-circle"></i><span>Product</span>
+            </a>
+          </li>
+
+          <li>
+            <a href="{% url 'make-transaction' %}">
+              <i class="bi bi-circle"></i><span>Make Transaction</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'transactions' %}">
+              <i class="bi bi-circle"></i><span>Transaction History</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Point of Sell Nav -->
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
@@ -377,6 +412,7 @@
           </li>
         </ul>
       </li><!-- End Components Nav -->
+
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">

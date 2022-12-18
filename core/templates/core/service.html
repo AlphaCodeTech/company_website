@@ -2,18 +2,18 @@
 {% load static %}
 
 {% block title %}
-Clients - InfomatticTech
+Services - InfomatticTech
 {% endblock title %}
 
 {% block content %}
 <main id="main" class="main">
 
   <div class="pagetitle">
-    <h1>Clients</h1>
+    <h1>Services</h1>
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
-        <li class="breadcrumb-item">Clients</li>
+        <li class="breadcrumb-item">Services</li>
       </ol>
     </nav>
   </div><!-- End Page Title -->
@@ -24,7 +24,7 @@ Clients - InfomatticTech
         <div class="card">
           <div class="card-body">
             <p></p>
-            <button class="btn btn-outline-primary" href="javascript:void(0)" id="createNewClient">Add New</button>
+            <button class="btn btn-outline-primary" href="javascript:void(0)" id="createNewService">Add New</button>
           </div>
 
         </div>
@@ -32,7 +32,7 @@ Clients - InfomatticTech
         <div class="card">
           <div class="card-body">
             <div class="alert alert-success success-msg" style="display:none"></div>
-            <h5 class="card-title">Client List</h5>
+            <h5 class="card-title">Service List</h5>
 
             <!-- Table with stripped rows -->
             <table class="table table-bordered data-table">
@@ -40,9 +40,8 @@ Clients - InfomatticTech
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col" width="200">Name</th>
-                  <th scope="col">Organization Type</th>
-                  <th scope="col" width="300">Address</th>
-                  <th scope="col">Service Rendered</th>
+                  <th scope="col" width="300">Description</th>
+                  <th scope="col" >Status</th>
                   <th scope="col" width="100">Actions</th>
                 </tr>
               </thead>
@@ -71,9 +70,9 @@ Clients - InfomatticTech
                 <div class="alert alert-danger error-msg" style="display:none">
                     <ul class="mb-0"></ul>
                 </div>
-                <form id="clientForm" name="clientForm" class="form-horizontal" novalidate>
+                <form id="serviceForm" name="serviceForm" class="form-horizontal" novalidate>
                     {% csrf_token %}
-                    <input type="hidden" name="client_id" id="client_id">
+                    <input type="hidden" name="service_id" id="service_id">
                     <div class="form-group">
                         <label for="name" class="col-sm-2 control-label">Name</label>
                         <div class="col-sm-12">
@@ -82,35 +81,19 @@ Clients - InfomatticTech
                     </div>
 
                     <div class="form-group">
-                        <label for="organization_type" class="col-sm-4 control-label">Organization Type</label>
+                        <label for="description" class="col-sm-4 control-label">Description</label>
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" id="organization_type" name="organization_type" placeholder="Enter Type of Organization" value="" maxlength="50">
+                            <input type="text" class="form-control" id="description" name="description" placeholder="Enter Type of Organization" value="" >
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">Address</label>
-                        <div class="col-sm-12">
-                            <textarea id="address" name="address" placeholder="Enter Address" class="form-control"></textarea>
-                        </div>
-                    </div>
 
                     <div class="form-group">
-                        <label for="service_rendered" class="col-sm-4 control-label">Service Rendered</label>
+                        <label for="service_rendered" class="col-sm-4 control-label">Status</label>
                         <div class="col-sm-12">
-                            <select name="service_rendered" id="service_rendered" class="form-select form-select-sm rounded-0" required>
-                              {% if not client.service_rendered %}
-                              <option value="" disabled selected></option>
-                              {% else %}
-                              <option value="" disabled></option>
-                              {% endif %}
-                              {% for service in services %}
-                                  {% if client.service_rendered == service.name %}
-                                  <option value="{{ service.name }}" selected>{{ service.name }}</option>
-                                  {% else %}
-                                  <option value="{{ service.name }}">{{ service.name }}</option>
-                                  {% endif %}
-                              {% endfor %}
+                            <select name="status" id="status" class="form-select form-select-sm rounded-0" required>
+                                <option value="active" selected>Active</option>
+                                <option value="inactive">Inactive</option>
                               </select>
                         </div>
                     </div>
@@ -131,7 +114,7 @@ Clients - InfomatticTech
     $(document).ready(function() {
         /*------------------------------------------
         --------------------------------------------
-        Client Listing Page
+        service Listing Page
         --------------------------------------------
         --------------------------------------------*/
         var table = $('.data-table').DataTable({
@@ -142,24 +125,23 @@ Clients - InfomatticTech
                     "render": function ( data, type, row ) {
                         var btn = '';
 
-                        btn = btn + " <button class='btn btn-primary editClient' data-pk='" + row.pk + "'>" + '<i class="fa fa-pencil"></i>' + "</button>";
-                        btn = btn + " <button class='btn btn-danger deleteClient' data-action='/" + row.pk + "/delete' data-pk='" + row.pk + "'>" + '<i class="fa fa-trash"></i>' + "</button>";
+                        btn = btn + " <button class='btn btn-primary editService' data-pk='" + row.pk + "'>" + '<i class="fa fa-pencil"></i>' + "</button>";
+                        btn = btn + " <button class='btn btn-danger deleteService' data-action='/" + row.pk + "/service-delete' data-pk='" + row.pk + "'>" + '<i class="fa fa-trash"></i>' + "</button>";
 
                         return btn;
                     },
-                    "targets": 5
+                    "targets": 4
                 }
             ],
             ajax: {
-                url: "{% url 'load_client_data' %}",
+                url: "{% url 'load_service_data' %}",
                 dataSrc: "",
             },
             columns: [
                 { data: "pk" },
                 { data: "fields.name" },
-                { data: "fields.organization_type" },
-                { data: "fields.address" },
-                { data: "fields.service_rendered" },
+                { data: "fields.description" },
+                { data: "fields.status" },
             ]
         });
 
@@ -168,11 +150,11 @@ Clients - InfomatticTech
         Click to Button
         --------------------------------------------
         --------------------------------------------*/
-        $('#createNewClient').click(function () {
-            $('#saveBtn').val("Create Client");
-            $('#client_id').val('');
-            $('#clientForm').trigger("reset");
-            $('#modelHeading').html("Create New Client");
+        $('#createNewService').click(function () {
+            $('#saveBtn').val("Create Service");
+            $('#service_id').val('');
+            $('#serviceForm').trigger("reset");
+            $('#modelHeading').html("Create New Service");
             $('#ajaxModel').modal('show');
         });
 
@@ -181,17 +163,16 @@ Clients - InfomatticTech
         Click to Edit Button
         --------------------------------------------
         --------------------------------------------*/
-        $('body').on('click', '.editClient', function () {
-            var client_id = $(this).data('pk');
-            $.get('/' + client_id +'/edit/', function (data) {
-                $('#modelHeading').html("Edit Client");
-                $('#saveBtn').val("edit-client");
+        $('body').on('click', '.editService', function () {
+            var service_id = $(this).data('pk');
+            $.get('/' + service_id +'/service-edit/', function (data) {
+                $('#modelHeading').html("Edit Service");
+                $('#saveBtn').val("edit-service");
                 $('#ajaxModel').modal('show');
-                $('#client_id').val(data.id);
+                $('#service_id').val(data.id);
                 $('#name').val(data.name);
-                $('#organization_type').val(data.organization_type);
-                $('#address').val(data.address);
-                $('#service_rendered').val(data.service_rendered);
+                $('#description').val(data.description);
+                $('#status').val(data.status);
             })
         });
 
@@ -218,23 +199,22 @@ Clients - InfomatticTech
             $(this).html('Sending..');
 
             $.ajax({
-                data: $('#clientForm').serialize(),
-                url: "{% url 'manage_client' %}",
+                data: $('#serviceForm').serialize(),
+                url: "{% url 'manage_service' %}",
                 type: "POST",
                 dataType: 'json',
                 success: function (data) {
                     if ($.isEmptyObject(data.error)) {
                         $("input[name='title']").val('');
-                        $("input[name='organization_type']").val('');
-                        $("input[name='address']").val('');
-                        $("input[name='service_rendered']").val('');
+                        $("input[name='description']").val('');
+                        $("input[name='status']").val('');
                         $('#ajaxModel').modal('hide');
                         $('.success-msg').css('display','block');
                         $('.success-msg').text(data.message);
                     }else{
                         printErrorMsg(data.error)
                     }
-                    $('#clientForm').trigger("reset");
+                    $('#serviceForm').trigger("reset");
                     table.ajax.reload();
 
                 },
@@ -249,11 +229,11 @@ Clients - InfomatticTech
         Delete Post Code
         --------------------------------------------
         --------------------------------------------*/
-        $("body").on("click",".deleteClient",function(){
+        $("body").on("click",".deleteService",function(){
             var current_object = $(this);
             swal({
                 title: "Are you sure?",
-                text: "You will not be able to recover this record!",
+                text: "You will not be able to recover this Record!",
                 type: "error",
                 showCancelButton: true,
                 dangerMode: true,
