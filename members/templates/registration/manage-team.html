@@ -1,0 +1,110 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}
+Manage Team - InfomatticTech
+{% endblock title %}
+
+{% block content %}
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Manage Team</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+        <li class="breadcrumb-item active">Manage Team</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+<form class="" action="index.html" method="post">
+  {% csrf_token %}
+</form>
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Manage Team</h5>
+
+            <!-- Table with stripped rows -->
+            <table class="table datatable">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Username</th>
+                  <th scope="col">First Name</th>
+                  <th scope="col">Last Name</th>
+                  <th scope="col">Admin Status</th>
+                  <th scope="col">Last Login</th>
+                  <th scope="col">Date Joined</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for object in object_list %}
+                  <tr>
+                    <th scope="row">{{object.pk}}</th>
+                    <td>{{object.username}}</td>
+                    <td>{{object.first_name}}</td>
+                    <td>{{object.last_name}}</td>
+                    <td>{{object.is_staff | title}}</td>
+                    <td>{{object.last_login}}</td>
+                    <td>{{object.date_joined |date:'Y-m-d H:i'}}</td>
+                    <td rowspan="">
+                    <button class='btn btn-danger deleteMember' data-action='/{{object.id}}/member-delete' data-pk='{{object.pk}}'> <i class="fa fa-trash"></i></button></td>
+                  </tr>
+
+                {% endfor %}
+
+              </tbody>
+            </table>
+            <!-- End Table with stripped rows -->
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main><!-- End #main -->
+{% endblock content %}
+
+{% block scriptArea %}
+<script type="text/javascript">
+  $(document).ready(function (){
+    $("body").on("click",".deleteMember",function(){
+        var current_object = $(this);
+        swal({
+            title: "Are you sure?",
+            text: "All Data Associated With This Member won't be recovered!",
+            type: "error",
+            showCancelButton: true,
+            dangerMode: true,
+            cancelButtonClass: '#DD6B55',
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: 'Delete!',
+        },function (result) {
+            if (result) {
+                var action = current_object.attr('data-action');
+                var token = $("input[name=csrfmiddlewaretoken]").val();
+                var id = current_object.attr('data-pk');
+
+                $('body').html("<form class='form-inline remove-form' method='post' action='"+action+"'></form>");
+                $('body').find('.remove-form').append('<input name="_method" type="hidden" value="delete">');
+                $('body').find('.remove-form').append('<input name="csrfmiddlewaretoken" type="hidden" value="'+token+'">');
+                $('body').find('.remove-form').append('<input name="id" type="hidden" value="'+id+'">');
+                $('body').find('.remove-form').submit();
+            }
+        });
+    });
+
+
+
+  });
+</script>
+
+{% endblock scriptArea %}

@@ -1,0 +1,54 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}
+Create User Profile - InfomatticTech
+{% endblock title %}
+
+{% block content %}
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Create User Profile</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+        <li class="breadcrumb-item active">Create User Profile</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+  <section class="section">
+    <div class="row">
+
+
+      <div class="col-lg-12">
+
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Create User Profile</h5>
+
+            <!-- Vertical Form -->
+            <form class="row g-3" method="post">
+              {% csrf_token %}
+              <div class="col-md-12">
+                {{form.as_p}}
+              </div>
+
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary">Submit</button>
+
+              </div>
+            </form><!-- Vertical Form -->
+
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </section>
+
+</main><!-- End #main -->
+
+{% endblock content %}
