@@ -14,12 +14,16 @@ from .forms import ClientForm, ServiceForm, ProductForm, TransactionForm
 
 from django.views.generic import View
 from .filters import TransactionFilter
+from django.contrib.admin.models import LogEntry
+from .mixins import GroupRequiredMixin
 # Create your views here.
 
 def home(request):
     return render(request, 'core/index.html', {})
 
 class DashboardView(LoginRequiredMixin,TemplateView):
+    model = LogEntry
+    print (model)
     template_name='core/dashboard-index.html'
 
 """ Admin Dashboard """
@@ -189,9 +193,10 @@ def product_delete(request,id):
 
 
 """Transaction Starts"""
-class MakeTransactionView(generic.CreateView):
+class MakeTransactionView(generic.CreateView, GroupRequiredMixin):
     model = Transaction
     template_name = 'core/make-transaction.html'
+    group_required= ['admin',]
     form_class = TransactionForm
 
 
