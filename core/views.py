@@ -7,7 +7,7 @@ from django.core import serializers
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 import json
 from django.urls import reverse
-from datetime import date, datetime
+from datetime import date, datetime 
 
 from .models import Client, Service, Products, Transaction
 from .forms import ClientForm, ServiceForm, ProductForm, TransactionForm
