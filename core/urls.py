@@ -28,4 +28,6 @@ urlpatterns = [
 
     path('account-overview/', views.account_overview, name='account_overview'),
 
+    path('daily_task_submission/', views.daily_task_submission, name="daily_task_submission"),
+
 ]

@@ -7,15 +7,16 @@ from django.core import serializers
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 import json
 from django.urls import reverse
-from datetime import date, datetime 
+from datetime import date, datetime
 
-from .models import Client, Service, Products, Transaction
+from .models import Client, Service, Products, Transaction, DailyTaskSubmission
 from .forms import ClientForm, ServiceForm, ProductForm, TransactionForm
 
-from django.views.generic import View
+from django.views.generic import View, CreateView
 from .filters import TransactionFilter
 from django.contrib.admin.models import LogEntry
 from .mixins import GroupRequiredMixin
+from django.contrib import messages
 # Create your views here.
 
 def home(request):
@@ -264,3 +265,20 @@ def account_overview(request):
         'transactions_today':transactions_today,
         }
     return render(request, 'core/account-overview.html', context)
+
+
+def daily_task_submission(request):
+    if request.method == 'POST':
+        user = request.user
+        role = request.POST['role']
+        email = request.POST['email']
+        time_spent = request.POST['time_spent']
+        date_submitted = request.POST['date_submitted']
+        task_done_on_above_mentioned_date = request.POST['taskdone']
+        
+        if DailyTaskSubmission.objects.create(user=user,role=role,email=email,time_spent=time_spent,date_submitted=date_submitted, task_done_on_above_mentioned_date = task_done_on_above_mentioned_date):
+            messages.success(request, 'Daily Task Submitted Successfully.')
+        else:
+            messages.error(request, "An Error Occured while submitting task")
+    return render(request, 'core/daily_task_submission.html')
+

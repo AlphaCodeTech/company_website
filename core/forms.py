@@ -1,5 +1,5 @@
 from django import forms
-from .models import Client, Service, Products, Transaction
+from .models import Client, Service, Products, Transaction, DailyTaskSubmission
 
 payment_choices = [('cash', 'Cash'), ('bank-transfer','Bank Transfer'),  ('online-payment', 'Online Payment')]
 payment_method = []
@@ -42,6 +42,23 @@ class TransactionForm(forms.ModelForm):
 
             'transaction_id': forms.TextInput(attrs={'class':'form-control', 'readonly':'True', 'id':'transaction_id'}),
             'transaction_date': forms.TextInput(attrs={'class':'form-control', 'readonly':'True'}),
+
+            # 'author': forms.TextInput(attrs={'class':'form-control', 'value':'', 'id': 'author', 'type':'hidden'}),
+        }
+class DailyTaskSubmissionForm(forms.ModelForm):
+    class Meta:
+        model = DailyTaskSubmission
+        fields = ('role', 'email', 'time_spent', 'date_submitted', 'task_done_on_above_mentioned_date')
+
+        widgets = {
+            'role': forms.Select(choices=choice_list, attrs={'class':'form-control'}),
+            'role': forms.TextInput(attrs={'class':'form-control', 'readonly':'True'}),
+            'email': forms.TextInput(attrs={'class':'form-control', 'readonly':'True'}),
+            # 'time_spent': forms.TextInput(attrs={'class':'form-control'}),
+            # 'payment_method': forms.Select(choices=payment_method, attrs={'class':'form-control'}),
+
+            # 'transaction_id': forms.TextInput(attrs={'class':'form-control', 'readonly':'True', 'id':'transaction_id'}),
+            # 'transaction_date': forms.TextInput(attrs={'class':'form-control', 'readonly':'True'}),
 
             # 'author': forms.TextInput(attrs={'class':'form-control', 'value':'', 'id': 'author', 'type':'hidden'}),
         }
