@@ -63,3 +63,11 @@ class Transaction (models.Model):
 
     class Meta:
         ordering = ['-transaction_date']
+
+class Project(models.Model):
+    assignee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    project_name = models.CharField(max_length=255)
+    description = models.TextField()
+    deadline = models.DateField()
+    is_completed = models.BooleanField(default=False, null=True, blank=True)
+    is_approved = models.BooleanField(default=False, null=True, blank=True)
