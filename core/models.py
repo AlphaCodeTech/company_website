@@ -4,6 +4,20 @@ from django.urls import reverse
 from django.utils import timezone
 # Create your models here.
 
+# ROLES = (
+#     ('React Developer')
+# )
+
+TIME_SPENT = (
+    ('1 Hour', '1 Hour'),
+    ('2 Hours', '2 Hours'),
+    ('3 Hours', '3 Hours'),
+    ('4 Hours', '4 Hours'),
+    ('5 Hours', '5 Hours'),
+    ('6 Hours', '6 Hours'),
+    ('7 Hours', '7 Hours'),
+    ('8 Hours', '8 Hours'),
+)
 class Service(models.Model):
     name = models.TextField()
     description = models.TextField()
@@ -69,5 +83,32 @@ class Project(models.Model):
     project_name = models.CharField(max_length=255)
     description = models.TextField()
     deadline = models.DateField()
+    github_repo = models.URLField(max_length=200)
     is_completed = models.BooleanField(default=False, null=True, blank=True)
     is_approved = models.BooleanField(default=False, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.project_name} {self.assignee}"
+
+class Task(models.Model):
+    assignee = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    task_name = models.CharField(max_length=255)
+    description = models.TextField()
+    deadline = models.DateField()
+    github_repo = models.URLField(max_length=200)
+    is_completed = models.BooleanField(default=False, null=True, blank=True)
+    is_approved = models.BooleanField(default=False, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.task_name} {self.assignee}"
+
+class DailyTaskSubmission(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    role = models.CharField(max_length=255)
+    email= models.CharField(max_length=255)
+    time_spent = models.CharField(max_length= 20, choices=TIME_SPENT)
+    date_submitted = models.DateField()
+    task_done_on_above_mentioned_date = models.TextField()
+
+    def __str__(self):
+        return f"{self.date_submitted} {self.email}"
