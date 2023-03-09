@@ -62,9 +62,13 @@ Projects - AlphaCode Technology
                     {% endif %}
                    
                     <td rowspan=""> <button class='btn btn-primary description'  data-pk="{{ project.id }}"> <i class="bi bi-file-text"></i></button>
-                    <button class='btn btn-danger deleteTransaction' data-action='/{{object.id}}/transaction-delete' data-pk='{{object.pk}}'> <i class="fa fa-trash"></i></button></td>
+                    {% if project.is_completed == False %}
+                    <a href="{% url 'project_completed' project.id %}" class="btn btn-success"> <i class="bi bi-check-lg"></i></a>
+                    {% endif %}
+                    
+                    </td>
                   </tr>
-
+                  {% comment %} <button class='btn btn-success deleteTransaction' data-action='/{{object.id}}/transaction-delete' data-pk='{{object.pk}}'> <i class="bi bi-check-lg"></i></button> {% endcomment %}
                 
               </tbody>
             </table>
@@ -103,13 +107,13 @@ Projects - AlphaCode Technology
               <hr>
               <div class="lh-1">
                 <center><small class="fw-bold">Description</small></center>
-                <p> {% lorem 2 b random %} </p>
+                <p id="description"> </p>
             </div>
              
               <!-- End Table with stripped rows -->
                 <div class="d-flex w-100 align-items-end">
-                    <div class="col-6 text-start fw-bold">Github Repo</div>
-                    <div class="col-6 text-end fw-bold" id="github"></div>
+                    <div class="col-3 text-start fw-bold">Github Repo</div>
+                    <div class="col-9 text-end fw-bold" id="github"></div>
                 </div>
 
 
@@ -137,26 +141,20 @@ Click to Edit Button
 --------------------------------------------
 --------------------------------------------*/
 $('body').on('click', '.description', function () {
-    var tran_id = $(this).data('pk');
-    $.get('/' + tran_id +'/receipt/', function (data) {
+    var project_id = $(this).data('pk');
+    $.get('/' + project_id +'/project_detail/', function (data) {
         $('#modelHeading').html("Project Description");
         $('#saveBtn').val("edit-service");
         $('#largeModal').modal('show');
-        $('#service_id').val(data.id);
-        $('#name').val(data.product);
-        $('#description').val(data.client_name);
-        $('#transaction_id').val(data.transaction_id);
+        $('#project_id').val(data.id);
+        $('#project_name').val(data.project_name);
+        $('#description').val(data.description);
 
-        var tdate = data.transaction_date;
-
-        document.getElementById('transaction_date').innerHTML = tdate.split("T")[0];
-        document.getElementById('tr_id').innerHTML = data.transaction_id;
-        document.getElementById('product').innerHTML = data.product;
-        document.getElementById('amount').innerHTML = data.amount;
-        document.getElementById('payment_method').innerHTML = data.payment_method;
-        document.getElementById('client').innerHTML = data.client_name;
-        document.getElementById('total_amount').innerHTML = "N " + data.amount;
-
+        document.getElementById('project_name').innerHTML =data.project_name;
+        document.getElementById('deadline').innerHTML = data.deadline;
+        document.getElementById('description').innerHTML = data.description;
+        document.getElementById('github').innerHTML = data.github_repo;
+        
     })
 });
 /*------------------------------------------

@@ -199,14 +199,12 @@ def product_delete(request,id):
     return HttpResponseRedirect(reverse('product'))
 '''End Of Product Section'''
 
-
 """Transaction Starts"""
 class MakeTransactionView(generic.CreateView, GroupRequiredMixin):
     model = Transaction
     template_name = 'core/make-transaction.html'
     group_required= ['admin',]
     form_class = TransactionForm
-
 
 def receipt(request,id):
     if request.method == 'GET':
@@ -215,8 +213,6 @@ def receipt(request,id):
         return JsonResponse({'id':tran.id,'product':tran.product, 'client_name':tran.client_name,'amount':tran.amount,'payment_method':tran.payment_method,'transaction_id':tran.transaction_id, 'transaction_date':tran.transaction_date})
     else:
         return JsonResponse({'errors':'Something went wrong!'})
-
-
 
 def transaction_delete(request, id):
     tran = Transaction.objects.get(id=id)
@@ -302,3 +298,13 @@ def project_detail(request,id):
         return JsonResponse({'id':proj.id,'project_name':proj.project_name, 'description':proj.description,'deadline':proj.deadline,'github_repo':proj.github_repo})
     else:
         return JsonResponse({'errors':'Something went wrong!'})
+    
+def project_complete(request, id):
+    try:
+        obj = get_object_or_404(Project, id=id)
+        obj.is_completed = True
+        obj.save()
+       
+        return HttpResponseRedirect(reverse('dashboard'))
+    except:
+        pass

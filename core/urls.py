@@ -31,5 +31,6 @@ urlpatterns = [
     path('daily_task_submission/', views.daily_task_submission, name="daily_task_submission"),
     path('<int:pk>/projects', views.projects, name='projects'),
     path('<int:id>/project_detail/', views.project_detail,name='project_detail'),
+    path('<int:id>/project_completed', views.project_complete, name="project_completed")
 
 ]
