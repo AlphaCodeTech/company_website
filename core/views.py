@@ -25,6 +25,7 @@ from .filters import TransactionFilter
 
 from .mixins import GroupRequiredMixin
 from django.contrib import messages
+from .decorators import allowed_users
 # Create your views here.
 
 def home(request):
@@ -32,7 +33,7 @@ def home(request):
     return render(request, 'core/index.html' )
 
 
-    
+@login_required 
 def dashboard(request):
     total_project = Project.objects.filter(assignee = request.user).count()
     completed_project = Project.objects.filter(assignee = request.user, is_completed =True).count()
@@ -56,6 +57,7 @@ def dashboard(request):
 
 '''Client Section'''
 @login_required
+@allowed_users(allowed_roles=['admin',])
 def client(request):
     services = Service.objects.filter(status = "active").all()
     return render (request, 'core/client.html',{'services':services})
@@ -65,7 +67,7 @@ def load_client_data(request):
     json = serializers.serialize('json', object_list)
     return HttpResponse(json, content_type='application/json')
 
-class ClientView(View):
+class ClientView(View, LoginRequiredMixin):
     form_class = ClientForm
     template_name = 'core/client.html'
 
@@ -94,6 +96,8 @@ class ClientView(View):
             return JsonResponse({'error':True, 'error':form.errors})
         return render(request, self.template_name, {'data':data})
 
+@login_required
+@allowed_users(allowed_roles=['admin',])
 def client_edit(request,id):
     if request.method == 'GET':
         client = Client.objects.filter(id=id).first()
@@ -102,6 +106,8 @@ def client_edit(request,id):
     else:
         return JsonResponse({'errors':'Something went wrong!'})
 
+@login_required
+@allowed_users(allowed_roles=['admin',])
 def client_delete(request,id):
     client = Client.objects.get(id=id)
     client.delete()
@@ -112,6 +118,7 @@ def client_delete(request,id):
 
 '''Service Section'''
 @login_required
+@allowed_users(allowed_roles=['admin',])
 def service(request):
     return render (request, 'core/service.html',{})
 
@@ -163,6 +170,7 @@ def service_delete(request,id):
 
 '''Product Section'''
 @login_required
+@allowed_users(allowed_roles=['admin',])
 def product(request):
     services = Service.objects.filter(status = "active").all()
     return render (request, 'core/product.html',{'services':services})
@@ -203,6 +211,7 @@ class ProductView(View):
             return JsonResponse({'error':True, 'error':form.errors})
         return render(request, self.template_name, {'data':data})
 
+@allowed_users(allowed_roles=['admin',])
 def product_edit(request,id):
     if request.method == 'GET':
         product = Products.objects.filter(id=id).first()
@@ -211,6 +220,7 @@ def product_edit(request,id):
     else:
         return JsonResponse({'errors':'Something went wrong!'})
 
+@allowed_users(allowed_roles=['admin',])
 def product_delete(request,id):
     product = Products.objects.get(id=id)
     product.delete()
@@ -224,6 +234,7 @@ class MakeTransactionView(generic.CreateView, GroupRequiredMixin):
     group_required= ['admin',]
     form_class = TransactionForm
 
+@allowed_users(allowed_roles=['admin',])
 def receipt(request,id):
     if request.method == 'GET':
         tran = Transaction.objects.filter(id=id).first()
@@ -232,18 +243,22 @@ def receipt(request,id):
     else:
         return JsonResponse({'errors':'Something went wrong!'})
 
+@login_required
+@allowed_users(allowed_roles=['admin',])
 def transaction_delete(request, id):
     tran = Transaction.objects.get(id=id)
     tran.delete()
     return HttpResponseRedirect(reverse('transactions'))
 
+@login_required
 def transactions(request):
     transaction_list = Transaction.objects.all()
     transaction_filter = TransactionFilter(request.GET, queryset=transaction_list)
     return render(request, 'core/transactions.html', {'filter':transaction_filter})
 
 """Transaction Ends """
-
+@login_required
+@allowed_users(allowed_roles=['admin',])
 def account_overview(request):
     now = datetime.now()
     current_year = now.strftime("%Y")
@@ -287,7 +302,7 @@ def account_overview(request):
         }
     return render(request, 'core/account-overview.html', context)
 
-
+@login_required
 def daily_task_submission(request):
     if request.method == 'POST':
         user = request.user
@@ -303,10 +318,12 @@ def daily_task_submission(request):
             messages.error(request, "An Error Occured while submitting task")
     return render(request, 'core/daily_task_submission.html')
 
+@login_required
 def tasks(request, pk):
     task = Task.objects.filter(assignee=pk)
     return render(request, 'core/tasks.html', {'tasks':task})
 
+@login_required
 def task_detail(request,id):
     if request.method == 'GET':
         proj = Task.objects.filter(id=id).first()
@@ -315,6 +332,7 @@ def task_detail(request,id):
     else:
         return JsonResponse({'errors':'Something went wrong!'})
     
+@login_required
 def task_complete(request, id):
     try:
         obj = get_object_or_404(Task, id=id)
@@ -325,10 +343,12 @@ def task_complete(request, id):
     except:
         pass
 
+@login_required
 def projects(request, pk):
     projects = Project.objects.filter(assignee=pk)
     return render(request, 'core/projects.html', {'projects':projects})
 
+@login_required
 def project_detail(request,id):
     if request.method == 'GET':
         proj = Project.objects.filter(id=id).first()
@@ -337,6 +357,7 @@ def project_detail(request,id):
     else:
         return JsonResponse({'errors':'Something went wrong!'})
     
+@login_required
 def project_complete(request, id):
     try:
         obj = get_object_or_404(Project, id=id)

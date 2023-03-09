@@ -9,10 +9,12 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import Group
+from core.decorators import allowed_users
 
 
 # Create your views here.
 @login_required
+@allowed_users(allowed_roles=['admin',])
 def registerpage(request):
     form = SignUpForm()
     if request.method == "POST":
@@ -31,12 +33,14 @@ class Manage_Team(LoginRequiredMixin, generic.ListView):
     model = User
     template_name = 'registration/manage-team.html'
 
+@login_required
+@allowed_users(allowed_roles=['admin',])
 def member_delete(request, id):
     member = User.objects.get(id=id)
     member.delete()
     return HttpResponseRedirect(reverse('manage-team'))
 
-class ShowProfilePageView(generic.DetailView):
+class ShowProfilePageView(generic.DetailView, LoginRequiredMixin):
     model = Profile
     template_name = 'registration/user_profile.html'
 
@@ -49,7 +53,7 @@ class ShowProfilePageView(generic.DetailView):
         context["page_user"] = page_user
         return context
 
-class CreateProfilePageView(generic.CreateView):
+class CreateProfilePageView(generic.CreateView, LoginRequiredMixin):
     model = Profile
     form_class = ProfilePageForm
     # fields = '__all__'
@@ -59,16 +63,17 @@ class CreateProfilePageView(generic.CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class EditProfilePageView(generic.UpdateView):
+class EditProfilePageView(generic.UpdateView, LoginRequiredMixin):
     model = Profile
     form_class = EditProfilePageForm
     template_name = 'registration/edit_profile_page.html'
     success_url = reverse_lazy('dashboard')
 
-class PasswordsChangeView(PasswordChangeView):
+class PasswordsChangeView(PasswordChangeView, LoginRequiredMixin):
     # form_class = PasswordChangeForm
     form_class = PasswordChangingForm
     success_url = reverse_lazy('password_success')
 
+@login_required
 def Password_Success(request):
     return render (request, 'registration/password_success.html', {})

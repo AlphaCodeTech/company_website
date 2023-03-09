@@ -151,7 +151,7 @@
           <span>Dashboard</span>
         </a>
       </li><!-- End Dashboard Nav -->
-
+{% if user.is_staff %}
       <li class="nav-item">
         <a class="nav-link collapsed" href="{% url 'client'%}">
           <i class="bi bi-people"></i>
@@ -211,7 +211,7 @@
           </li>
         </ul>
       </li><!-- End Components Nav -->
-
+      {% endif %}
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
