@@ -1,4 +1,4 @@
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import redirect, render,get_object_or_404
 from django.views import generic
 from .forms import SignUpForm, ProfilePageForm, EditProfilePageForm,PasswordChangingForm
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,13 +7,25 @@ from django.contrib.auth.models import User
 from .models import Profile
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib.auth.views import PasswordChangeView
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import Group
 
 
 # Create your views here.
-class UserRegisterView(LoginRequiredMixin, generic.CreateView):
-    form_class = SignUpForm
-    template_name = 'registration/register.html'
-    success_url = reverse_lazy('manage-team')
+@login_required
+def registerpage(request):
+    form = SignUpForm()
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            username = form.cleaned_data.get('username')
+
+            return redirect('manage-team')
+
+    context = {'form':form}
+    return render(request, 'registration/register.html', context)
+
 
 class Manage_Team(LoginRequiredMixin, generic.ListView):
     model = User

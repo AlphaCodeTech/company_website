@@ -45,7 +45,7 @@
               <div class="d-flex justify-content-center py-4">
                 <a href="index.html" class="logo d-flex align-items-center w-auto">
                   <img src="{% static 'img/logo.png' %}" alt="">
-                  <span class="d-none d-lg-block">Infomattic Tech</span>
+                  <span class="d-none d-lg-block">AlphaCodeTech</span>
                 </a>
               </div><!-- End Logo -->
 
@@ -61,21 +61,7 @@
                   <form class="row g-3 needs-validation" method="post" novalidate>
                     {% csrf_token %}
                     <div class="text-center small">{{form.errors}}</div>
-                    <div class="col-12">
-                      <label for="yourName" class="form-label">Your First Name</label>
-                      {{form.first_name}}
-                    </div>
-
-                    <div class="col-12">
-                      <label for="yourName" class="form-label">Your Last Name</label>
-                      {{form.last_name}}
-                    </div>
-
-                    <div class="col-12">
-                      <label for="yourEmail" class="form-label">Your Email</label>
-                      {{form.email}}
-                    </div>
-
+          
                     <div class="col-12">
                       <label for="yourUsername" class="form-label">Username</label>
                       <div class="input-group has-validation">
@@ -83,6 +69,13 @@
                         {{form.username}}
                       </div>
                     </div>
+                    
+                    <div class="col-12">
+                      <label for="yourEmail" class="form-label">Your Email</label>
+                      {{form.email}}
+                    </div>
+
+                   
 
                     <div class="col-12">
                       <label for="yourPassword" class="form-label">Password</label>
@@ -103,9 +96,7 @@
                 </div>
               </div>
 
-              <div class="credits">
-                Designed by <a href="">InfomatticTech</a>
-              </div>
+            
 
             </div>
           </div>
