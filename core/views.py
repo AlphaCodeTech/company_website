@@ -22,18 +22,35 @@ from .forms import ClientForm, ServiceForm, ProductForm, TransactionForm
 
 from django.views.generic import View, CreateView
 from .filters import TransactionFilter
-from django.contrib.admin.models import LogEntry
+
 from .mixins import GroupRequiredMixin
 from django.contrib import messages
 # Create your views here.
 
 def home(request):
-    return render(request, 'core/index.html', {})
+    
+    return render(request, 'core/index.html' )
 
-class DashboardView(LoginRequiredMixin,TemplateView):
-    model = LogEntry
-    print (model)
-    template_name='core/dashboard-index.html'
+
+    
+def dashboard(request):
+    total_project = Project.objects.filter(assignee = request.user).count()
+    completed_project = Project.objects.filter(assignee = request.user, is_completed =True).count()
+    approved_project = Project.objects.filter(assignee = request.user, is_approved =True).count()
+
+    total_task = Task.objects.filter(assignee = request.user).count()
+    completed_task = Task.objects.filter(assignee = request.user, is_completed =True).count()
+    approved_task = Task.objects.filter(assignee = request.user, is_approved =True).count()
+    context={
+        'total_project': total_project,
+        'completed_project': completed_project,
+        'approved_project': approved_project,
+        
+        'total_task': total_task,
+        'completed_task': completed_task,
+        'approved_task': approved_task,
+    }
+    return render(request, 'core/dashboard-index.html', context)
 
 """ Admin Dashboard """
 
