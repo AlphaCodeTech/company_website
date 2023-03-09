@@ -1,0 +1,198 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}
+Projects - AlphaCode Technology
+{% endblock title %}
+
+{% block content %}
+
+<main id="main" class="main">
+
+  <div class="pagetitle">
+    <h1>Project History</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
+        <li class="breadcrumb-item active">Project History</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+  <form class="" action="index.html" method="get">
+
+  </form>
+
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+
+        
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Transaction History</h5>
+
+            <!-- Table with stripped rows -->
+            <table class="table datatable">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Product Name</th>
+                  <th scope="col">Deadline</th>
+                  <th scope="col">Completed</th>
+                  <th scope="col">Approved</th>
+                  
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                  <tr>
+                    <th scope="row"></th>
+                    <td>{{project.project_name}}</td>
+                    <td>{{project.deadline}}</td>
+                    {% if project.is_completed == True %}
+                    <td><span class="badge bg-success">Yes</span></td>
+                    {% else %}
+                    <td><span class="badge bg-danger">No</span></td>
+                    {% endif %}
+                    {% if project.is_approved == True %}
+                    <td><span class="badge bg-success">Approved</span></td>
+                    {% else %}
+                    <td><span class="badge bg-warning">Pending</span></td>
+                    {% endif %}
+                   
+                    <td rowspan=""> <button class='btn btn-primary description'  data-pk="{{ project.id }}"> <i class="bi bi-file-text"></i></button>
+                    <button class='btn btn-danger deleteTransaction' data-action='/{{object.id}}/transaction-delete' data-pk='{{object.pk}}'> <i class="fa fa-trash"></i></button></td>
+                  </tr>
+
+                
+              </tbody>
+            </table>
+            <!-- End Table with stripped rows -->
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main><!-- End #main -->
+
+<div class="modal fade" id="largeModal"  tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="printarea">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modelHeading"></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+              <div class="lh-1">
+                  <center><small class="fw-bold">AlphaCode Technology</small></center>
+                  <center><small class="fw-bold">Project Description</small></center>
+              </div>
+              <hr>
+              <div class="lh-1">
+                  <div>
+                      <span><strong>Project Name:</strong> </span> <span id="project_name"> </span> <br>
+                      <br>
+                      <span><strong>Deadline:</strong></span> <span id="deadline"> </span>
+                  </div>
+              </div>
+              <hr>
+              <div class="lh-1">
+                <center><small class="fw-bold">Description</small></center>
+                <p> {% lorem 2 b random %} </p>
+            </div>
+             
+              <!-- End Table with stripped rows -->
+                <div class="d-flex w-100 align-items-end">
+                    <div class="col-6 text-start fw-bold">Github Repo</div>
+                    <div class="col-6 text-end fw-bold" id="github"></div>
+                </div>
+
+
+                <hr>
+                <div class="clear-fix py-3"></div>
+                <div class="d-flex w-100 justify-content-end">
+                    <button class="btn btn-light bg-gradient border rounded-0 btn-sm me-1" type="button" onclick="window.print()"><i class="mdi mdi-printer"></i> Print</button>
+                    <button class="btn btn-secondary bg-gradient border rounded-0 btn-sm" type="button" data-bs-dismiss="modal"><i class="mdi mdi-close"></i> Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+{% block scriptArea %}
+<script type="text/javascript">
+$('input').addClass('form-control');
+$(document).ready(function() {
+
+/*------------------------------------------
+--------------------------------------------
+Click to Edit Button
+--------------------------------------------
+--------------------------------------------*/
+$('body').on('click', '.description', function () {
+    var tran_id = $(this).data('pk');
+    $.get('/' + tran_id +'/receipt/', function (data) {
+        $('#modelHeading').html("Project Description");
+        $('#saveBtn').val("edit-service");
+        $('#largeModal').modal('show');
+        $('#service_id').val(data.id);
+        $('#name').val(data.product);
+        $('#description').val(data.client_name);
+        $('#transaction_id').val(data.transaction_id);
+
+        var tdate = data.transaction_date;
+
+        document.getElementById('transaction_date').innerHTML = tdate.split("T")[0];
+        document.getElementById('tr_id').innerHTML = data.transaction_id;
+        document.getElementById('product').innerHTML = data.product;
+        document.getElementById('amount').innerHTML = data.amount;
+        document.getElementById('payment_method').innerHTML = data.payment_method;
+        document.getElementById('client').innerHTML = data.client_name;
+        document.getElementById('total_amount').innerHTML = "N " + data.amount;
+
+    })
+});
+/*------------------------------------------
+--------------------------------------------
+Delete Post Code
+--------------------------------------------
+--------------------------------------------*/
+$("body").on("click",".deleteTransaction",function(){
+    var current_object = $(this);
+    swal({
+        title: "Are you sure?",
+        text: "You will not be able to recover this Record!",
+        type: "error",
+        showCancelButton: true,
+        dangerMode: true,
+        cancelButtonClass: '#DD6B55',
+        confirmButtonColor: '#dc3545',
+        confirmButtonText: 'Delete!',
+    },function (result) {
+        if (result) {
+            var action = current_object.attr('data-action');
+            var token = $("input[name=csrfmiddlewaretoken]").val();
+            var id = current_object.attr('data-pk');
+
+            $('body').html("<form class='form-inline remove-form' method='post' action='"+action+"'></form>");
+            $('body').find('.remove-form').append('<input name="_method" type="hidden" value="delete">');
+            $('body').find('.remove-form').append('<input name="csrfmiddlewaretoken" type="hidden" value="'+token+'">');
+            $('body').find('.remove-form').append('<input name="id" type="hidden" value="'+id+'">');
+            $('body').find('.remove-form').submit();
+        }
+    });
+});
+});
+
+</script>
+
+
+
+{% endblock scriptArea %}

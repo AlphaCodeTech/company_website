@@ -83,7 +83,7 @@ class Project(models.Model):
     project_name = models.CharField(max_length=255)
     description = models.TextField()
     deadline = models.DateField()
-    github_repo = models.URLField(max_length=200)
+    github_repo = models.URLField(max_length=200, null=True, blank=True)
     is_completed = models.BooleanField(default=False, null=True, blank=True)
     is_approved = models.BooleanField(default=False, null=True, blank=True)
 

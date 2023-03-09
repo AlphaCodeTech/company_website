@@ -9,7 +9,14 @@ import json
 from django.urls import reverse
 from datetime import date, datetime
 
-from .models import Client, Service, Products, Transaction, DailyTaskSubmission
+from .models import (
+    Client, 
+    Service, 
+    Products, 
+    Transaction, 
+    DailyTaskSubmission,
+    Project,
+)
 from .forms import ClientForm, ServiceForm, ProductForm, TransactionForm
 
 from django.views.generic import View, CreateView
@@ -282,3 +289,16 @@ def daily_task_submission(request):
             messages.error(request, "An Error Occured while submitting task")
     return render(request, 'core/daily_task_submission.html')
 
+
+
+def projects(request, pk):
+    projects = Project.objects.get(assignee=pk)
+    return render(request, 'core/projects.html', {'project':projects})
+
+def project_detail(request,id):
+    if request.method == 'GET':
+        proj = Project.objects.filter(id=id).first()
+
+        return JsonResponse({'id':proj.id,'project_name':proj.project_name, 'description':proj.description,'deadline':proj.deadline,'github_repo':proj.github_repo})
+    else:
+        return JsonResponse({'errors':'Something went wrong!'})
