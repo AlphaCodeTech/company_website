@@ -16,6 +16,7 @@ from .models import (
     Transaction, 
     DailyTaskSubmission,
     Project,
+    Task,
 )
 from .forms import ClientForm, ServiceForm, ProductForm, TransactionForm
 
@@ -285,11 +286,31 @@ def daily_task_submission(request):
             messages.error(request, "An Error Occured while submitting task")
     return render(request, 'core/daily_task_submission.html')
 
+def tasks(request, pk):
+    task = Task.objects.filter(assignee=pk)
+    return render(request, 'core/tasks.html', {'tasks':task})
 
+def task_detail(request,id):
+    if request.method == 'GET':
+        proj = Task.objects.filter(id=id).first()
+
+        return JsonResponse({'id':proj.id,'task_name':proj.task_name, 'description':proj.description,'deadline':proj.deadline,'github_repo':proj.github_repo})
+    else:
+        return JsonResponse({'errors':'Something went wrong!'})
+    
+def task_complete(request, id):
+    try:
+        obj = get_object_or_404(Task, id=id)
+        obj.is_completed = True
+        obj.save()
+       
+        return HttpResponseRedirect(reverse('dashboard'))
+    except:
+        pass
 
 def projects(request, pk):
-    projects = Project.objects.get(assignee=pk)
-    return render(request, 'core/projects.html', {'project':projects})
+    projects = Project.objects.filter(assignee=pk)
+    return render(request, 'core/projects.html', {'projects':projects})
 
 def project_detail(request,id):
     if request.method == 'GET':

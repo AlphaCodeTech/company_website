@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Projects - AlphaCode Technology
+Task - AlphaCode Technology
 {% endblock title %}
 
 {% block content %}
@@ -10,11 +10,11 @@ Projects - AlphaCode Technology
 <main id="main" class="main">
 
   <div class="pagetitle">
-    <h1>Project History</h1>
+    <h1>Task History</h1>
     <nav>
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Home</a></li>
-        <li class="breadcrumb-item active">Project History</li>
+        <li class="breadcrumb-item active">Task History</li>
       </ol>
     </nav>
   </div><!-- End Page Title -->
@@ -29,14 +29,14 @@ Projects - AlphaCode Technology
         
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">Transaction History</h5>
+            <h5 class="card-title">Task History</h5>
 
             <!-- Table with stripped rows -->
             <table class="table datatable">
               <thead>
                 <tr>
                   <th scope="col">#</th>
-                  <th scope="col">Product Name</th>
+                  <th scope="col">Task Name</th>
                   <th scope="col">Deadline</th>
                   <th scope="col">Completed</th>
                   <th scope="col">Approved</th>
@@ -45,31 +45,31 @@ Projects - AlphaCode Technology
                 </tr>
               </thead>
               <tbody>
-                {% for project in projects %}
+                {% for task in tasks %}
                   <tr>
                     <th scope="row"></th>
-                    <td>{{project.project_name}}</td>
-                    <td>{{project.deadline}}</td>
-                    {% if project.is_completed == True %}
+                    <td>{{task.task_name}}</td>
+                    <td>{{task.deadline}}</td>
+                    {% if task.is_completed == True %}
                     <td><span class="badge bg-success">Yes</span></td>
                     {% else %}
                     <td><span class="badge bg-danger">No</span></td>
                     {% endif %}
-                    {% if project.is_approved == True %}
+                    {% if task.is_approved == True %}
                     <td><span class="badge bg-success">Approved</span></td>
                     {% else %}
                     <td><span class="badge bg-warning">Pending</span></td>
                     {% endif %}
                    
-                    <td rowspan=""> <button class='btn btn-primary description'  data-pk="{{ project.id }}"> <i class="bi bi-file-text"></i></button>
-                    {% if project.is_completed == False %}
-                    <a href="{% url 'project_completed' project.id %}" class="btn btn-success"> <i class="bi bi-check-lg"></i></a>
+                    <td rowspan=""> <button class='btn btn-primary description'  data-pk="{{ task.id }}"> <i class="bi bi-file-text"></i></button>
+                    {% if task.is_completed == False %}
+                    <a href="{% url 'task_completed' task.id %}" class="btn btn-success"> <i class="bi bi-check-lg"></i></a>
                     {% endif %}
                     
                     </td>
                   </tr>
                   {% comment %} <button class='btn btn-success deleteTransaction' data-action='/{{object.id}}/transaction-delete' data-pk='{{object.pk}}'> <i class="bi bi-check-lg"></i></button> {% endcomment %}
-               {% endfor %} 
+                {% endfor %}
               </tbody>
             </table>
             <!-- End Table with stripped rows -->
@@ -94,12 +94,12 @@ Projects - AlphaCode Technology
 
               <div class="lh-1">
                   <center><small class="fw-bold">AlphaCode Technology</small></center>
-                  <center><small class="fw-bold">Project Description</small></center>
+                  <center><small class="fw-bold">Task Description</small></center>
               </div>
               <hr>
               <div class="lh-1">
                   <div>
-                      <span><strong>Project Name:</strong> </span> <span id="project_name"> </span> <br>
+                      <span><strong>Task Name:</strong> </span> <span id="task_name"> </span> <br>
                       <br>
                       <span><strong>Deadline:</strong></span> <span id="deadline"> </span>
                   </div>
@@ -141,16 +141,16 @@ Click to Edit Button
 --------------------------------------------
 --------------------------------------------*/
 $('body').on('click', '.description', function () {
-    var project_id = $(this).data('pk');
-    $.get('/' + project_id +'/project_detail/', function (data) {
-        $('#modelHeading').html("Project Description");
+    var task_id = $(this).data('pk');
+    $.get('/' + task_id +'/task_detail/', function (data) {
+        $('#modelHeading').html("Task Description");
         $('#saveBtn').val("edit-service");
         $('#largeModal').modal('show');
         $('#project_id').val(data.id);
         $('#project_name').val(data.project_name);
         $('#description').val(data.description);
 
-        document.getElementById('project_name').innerHTML =data.project_name;
+        document.getElementById('task_name').innerHTML =data.task_name;
         document.getElementById('deadline').innerHTML = data.deadline;
         document.getElementById('description').innerHTML = data.description;
         document.getElementById('github').innerHTML = data.github_repo;

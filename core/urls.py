@@ -29,6 +29,11 @@ urlpatterns = [
     path('account-overview/', views.account_overview, name='account_overview'),
 
     path('daily_task_submission/', views.daily_task_submission, name="daily_task_submission"),
+    path('<int:pk>/task', views.tasks, name='tasks'),
+    path('<int:id>/task_detail/', views.task_detail,name='task_detail'),
+    path('<int:id>/task_completed', views.task_complete, name="task_completed"),
+
+
     path('<int:pk>/projects', views.projects, name='projects'),
     path('<int:id>/project_detail/', views.project_detail,name='project_detail'),
     path('<int:id>/project_completed', views.project_complete, name="project_completed")
